@@ -18,7 +18,10 @@ lib/
         -util.dart
 
     services/
-        -(por implementar)
+        -api_services.dart
+
+    entity/
+        -actividad.dart
 
 
 assets/
