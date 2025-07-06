@@ -9,7 +9,12 @@ class ApiService {
     final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonList = json.decode(response.body);
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+      final List<dynamic> jsonList = jsonData['characters'];
+
+      for (var item in jsonList.take(5)) {
+        print('JSON personaje: $item\n');
+      }
       return jsonList.map((json) => NarutoCharacter.fromJson(json)).toList();
     } else {
       throw Exception('Error al cargar los personajes');

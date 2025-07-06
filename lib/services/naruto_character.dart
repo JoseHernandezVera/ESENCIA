@@ -10,10 +10,13 @@ class NarutoCharacter {
   });
 
   factory NarutoCharacter.fromJson(Map<String, dynamic> json) {
+    final imageUrl = json['images']?['main'] ?? '';
+    final debutAnime = json['debut']?['anime'] ?? 'Desconocido';
+
     return NarutoCharacter(
-      name: json['name'],
-      image: json['images']['main'],
-      debut: json['debut']['anime'] ?? 'Desconocido',
+      name: json['name'] ?? 'Sin nombre',
+      image: imageUrl,
+      debut: debutAnime,
     );
   }
 }
