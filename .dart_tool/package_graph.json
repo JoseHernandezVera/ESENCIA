@@ -10,7 +10,8 @@
         "cupertino_icons",
         "flutter",
         "google_fonts",
-        "http"
+        "http",
+        "logger"
       ],
       "devDependencies": [
         "flutter_lints",
@@ -55,6 +56,11 @@
     {
       "name": "cupertino_icons",
       "version": "1.0.8",
+      "dependencies": []
+    },
+    {
+      "name": "logger",
+      "version": "2.6.0",
       "dependencies": []
     },
     {
