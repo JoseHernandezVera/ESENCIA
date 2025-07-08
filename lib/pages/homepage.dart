@@ -36,33 +36,71 @@ class _MyHomePageState extends State<MyHomePage> {
           }
 
           final characters = snapshot.data!;
-          return ListView.builder(
-            itemCount: characters.length,
-            itemBuilder: (context, index) {
-              final char = characters[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                elevation: 2,
-                child: ListTile(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      char.image,
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.error_outline),
-                    ),
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // 2 columnas
+                childAspectRatio: 0.75, // Altura proporcional
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemCount: characters.length,
+              itemBuilder: (context, index) {
+                final char = characters[index];
+                return Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                          child: Image.network(
+                            char.image,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Center(child: Icon(Icons.error)),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                char.name,
+                                style: Theme.of(context).textTheme.titleMedium,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                'Debut: ${char.debut}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                'Clan: ${char.clan}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  title: Text(
-                    char.name,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  subtitle: Text('Debut en anime: ${char.debut}'),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       ),
