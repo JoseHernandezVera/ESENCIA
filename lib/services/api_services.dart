@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'naruto_character.dart';
 
@@ -13,8 +14,10 @@ class ApiService {
       final List<dynamic> jsonList = jsonData['characters'];
 
       for (var item in jsonList.take(5)) {
+        log('JSON personaje: $item');
         print('JSON personaje: $item\n');
       }
+
       return jsonList.map((json) => NarutoCharacter.fromJson(json)).toList();
     } else {
       throw Exception('Error al cargar los personajes');
