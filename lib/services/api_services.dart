@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'naruto_character.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://dattebayo-api.onrender.com/characters';
+  static const String baseUrl = 'https://dattebayo-api.onrender.com/characters?limit=637';
 
   static Future<List<NarutoCharacter>> fetchCharacters() async {
     final response = await http.get(Uri.parse(baseUrl));
