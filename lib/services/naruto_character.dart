@@ -3,24 +3,26 @@ class NarutoCharacter {
   final String image;
   final String debut;
   final String clan;
+  final String? status;
+  final List<String>? jutsu;
 
   NarutoCharacter({
     required this.name,
     required this.image,
     required this.debut,
     required this.clan,
+    this.status,
+    this.jutsu,
   });
 
   factory NarutoCharacter.fromJson(Map<String, dynamic> json) {
-    //se toma la primera iamgen si existe
-    final imageList = json['images'];
+
     String imageUrl = '';
-
-    if (imageList != null && imageList is List && imageList.isNotEmpty && imageList[0] is String) {
-      imageUrl = imageList[0];
+    if (json['images'] is List && (json['images'] as List).isNotEmpty) {
+      imageUrl = json['images'].first;
+    } else if (json['image'] != null) {
+      imageUrl = json['image'];
     }
-
-    final debutAnime = json['debut']?['anime'] ?? 'Desconocido';
 
     String clanName = 'Desconocido';
     final rawClan = json['personal']?['clan'];
@@ -35,10 +37,11 @@ class NarutoCharacter {
     return NarutoCharacter(
       name: json['name'] ?? 'Sin nombre',
       image: imageUrl,
-      debut: debutAnime,
+      debut: json['debut']?['anime'] ?? 'Desconocido',
       clan: clanName,
+      status: json['personal']?['status'] as String?,
+      jutsu: json['jutsu'] is List ? List<String>.from(json['jutsu']) : null,
     );
   }
-
-
+  
 }

@@ -1,4 +1,3 @@
-// comparar.dart
 import 'package:flutter/material.dart';
 
 class CompararPage extends StatelessWidget {
