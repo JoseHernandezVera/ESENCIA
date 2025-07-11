@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/settings_provider.dart';
 import '../services/api_services.dart';
 import '../services/naruto_character.dart';
 import '../models/clan.dart';
@@ -270,13 +272,15 @@ class _HomeContentPageState extends State<HomeContentPage> {
               }
 
               final items = snapshot.data!;
+              final cardsPerRow = context.watch<SettingsProvider>().cardsPerRow;
+
               return RefreshIndicator(
                 onRefresh: _loadCollection,
                 child: GridView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.all(8),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: cardsPerRow,
                     childAspectRatio: 0.75,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
