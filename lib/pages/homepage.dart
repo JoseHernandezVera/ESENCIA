@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'no_connection_page.dart';
-import 'profile.dart';
 import 'config.dart';
 import 'comparar.dart';
 import 'home_content_page.dart';
