@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'no_connection_page.dart';
 import 'profile.dart';
 import 'config.dart';
 import 'comparar.dart';
@@ -13,26 +16,74 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+  final Connectivity _connectivity = Connectivity();
 
   final List<Widget> _pages = const [
     HomeContentPage(),    
-    ProfilePage(),
     ConfigPage(),
     CompararPage(),
   ];
 
   final List<String> _titles = [
     'Inicio',
-    'Perfil',
     'Configuración',
     'Comparar Personajes',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initConnectivity();
+    _setupConnectivityListener();
+  }
+
+  Future<void> _initConnectivity() async {
+    late List<ConnectivityResult> results;
+    try {
+      results = await _connectivity.checkConnectivity();
+    } catch (e) {
+      debugPrint('Error checking connectivity: $e');
+      return;
+    }
+
+    if (!mounted) return;
+    
+    _updateConnectionStatus(results);
+  }
+
+  void _setupConnectivityListener() {
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  void _updateConnectionStatus(List<ConnectivityResult> results) {
+    if (!_hasConnection(results) && mounted) {
+      _navigateToNoConnection();
+    }
+  }
+
+  bool _hasConnection(List<ConnectivityResult> results) {
+    return results.isNotEmpty && results.any((result) => result != ConnectivityResult.none);
+  }
+
+  void _navigateToNoConnection() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const NoConnectionPage()),
+    );
+  }
 
   void _onItemTapped(int index) {
     Navigator.pop(context);
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -53,11 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
               onTap: () => _onItemTapped(0),
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Perfil'),
-              onTap: () => _onItemTapped(1),
             ),
             ListTile(
               leading: const Icon(Icons.settings),
