@@ -30,15 +30,12 @@ class _CompararPageState extends State<CompararPage> {
         ? const Center(child: CircularProgressIndicator())
         : Row(
             children: [
-              // Lado izquierdo
               Expanded(child: _buildCharacterSelector(true)),
-              // Línea divisoria
               Container(
                 width: 1,
                 height: double.infinity,
                 color: Colors.grey.shade400,
               ),
-              // Lado derecho
               Expanded(child: _buildCharacterSelector(false)),
             ],
           );

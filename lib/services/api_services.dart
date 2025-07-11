@@ -19,7 +19,7 @@ class ApiService {
     T Function(Map<String, dynamic>) fromJson, {
     String name = '',
     int page = 1,
-    int limit = 20,
+    int limit = 637,
   }) async {
     try {
       final params = {

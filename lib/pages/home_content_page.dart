@@ -286,7 +286,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
 
     if (item is NarutoCharacter) {
       name = item.name;
-      description = 'Debut: ${item.debut}\nClan: ${item.clan}';
+      description = 'Debut: ${item.debut}\nClan: ${item.clan}\nSexo: ${item.gender}\nAltura: ${item.height}\nAfiliación: ${item.affiliation}\nNaturaleza: ${item.nature}';
       image = item.image;
     } else if (item is Clan ||
         item is Village ||
@@ -360,7 +360,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
                   Text(
                     description,
                     style: Theme.of(context).textTheme.bodySmall,
-                    maxLines: 3,
+                    maxLines: 6,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
