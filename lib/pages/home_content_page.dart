@@ -15,6 +15,13 @@ class _HomeContentPageState extends State<HomeContentPage> {
   List<NarutoCharacter> _filteredCharacters = [];
   List<bool> _isExpandedList = [];
 
+  String _searchQuery = '';
+  String _selectedClan = 'Todos';
+  String _selectedNature = 'Todos';
+
+  List<String> _clanList = ['Todos'];
+  List<String> _natureList = ['Todos'];
+
   @override
   void initState() {
     super.initState();
@@ -22,17 +29,30 @@ class _HomeContentPageState extends State<HomeContentPage> {
       _allCharacters = characters;
       _filteredCharacters = characters;
       _isExpandedList = List<bool>.filled(characters.length, false);
+
+      _clanList.addAll({
+        ...characters.map((c) => c.clan).where((c) => c != 'Desconocido')
+      }.toList()..sort());
+
+      _natureList.addAll({
+        ...characters
+            .expand((c) => c.nature.split(', '))
+            .where((n) => n != 'Desconocido')
+      }.toList()..sort());
+
       return characters;
     });
   }
 
-  void _filterCharacters(String query) {
+  void _applyFilters() {
     setState(() {
-      
-      _filteredCharacters = _allCharacters
-          .where((character) =>
-              character.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      _filteredCharacters = _allCharacters.where((character) {
+        final matchSearch = character.name.toLowerCase().contains(_searchQuery.toLowerCase());
+        final matchClan = _selectedClan == 'Todos' || character.clan == _selectedClan;
+        final matchNature = _selectedNature == 'Todos' ||
+            character.nature.split(', ').contains(_selectedNature);
+        return matchSearch && matchClan && matchNature;
+      }).toList();
     });
   }
 
@@ -53,15 +73,62 @@ class _HomeContentPageState extends State<HomeContentPage> {
           children: [
             Padding(
               padding: const EdgeInsets.all(12.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Buscar personaje',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Buscar personaje',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      _searchQuery = value;
+                      _applyFilters();
+                    },
                   ),
-                ),
-                onChanged: _filterCharacters,
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          value: _selectedClan,
+                          items: _clanList
+                              .map((clan) => DropdownMenuItem(
+                                    value: clan,
+                                    child: Text(clan),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            _selectedClan = value!;
+                            _applyFilters();
+                          },
+                          decoration: const InputDecoration(labelText: 'Clan'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          value: _selectedNature,
+                          items: _natureList
+                              .map((nature) => DropdownMenuItem(
+                                    value: nature,
+                                    child: Text(nature),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            _selectedNature = value!;
+                            _applyFilters();
+                          },
+                          decoration: const InputDecoration(labelText: 'Naturaleza'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -70,7 +137,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    childAspectRatio: 0.55,
+                    childAspectRatio: 0.6,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                   ),
@@ -95,10 +162,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
-                            BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 4,
-                                offset: Offset(0, 2))
+                            BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))
                           ],
                         ),
                         child: Column(
@@ -107,13 +171,11 @@ class _HomeContentPageState extends State<HomeContentPage> {
                             Expanded(
                               flex: 6,
                               child: ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(12)),
+                                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                                 child: Image.network(
                                   char.image,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Center(child: Icon(Icons.error)),
+                                  errorBuilder: (context, error, stackTrace) => const Center(child: Icon(Icons.error)),
                                 ),
                               ),
                             ),
@@ -125,40 +187,22 @@ class _HomeContentPageState extends State<HomeContentPage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        char.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      Text(char.name,
+                                          style: Theme.of(context).textTheme.titleMedium),
                                       Text('Debut: ${char.debut}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall),
+                                          style: Theme.of(context).textTheme.bodySmall),
                                       Text('Clan: ${char.clan}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall),
+                                          style: Theme.of(context).textTheme.bodySmall),
                                       if (expanded) ...[
                                         const SizedBox(height: 8),
                                         Text('Sexo: ${char.gender}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall),
+                                            style: Theme.of(context).textTheme.bodySmall),
                                         Text('Altura: ${char.height}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall),
+                                            style: Theme.of(context).textTheme.bodySmall),
                                         Text('Afiliaciones: ${char.affiliation}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall),
-                                        Text('Naturaleza del chakra: ${char.nature}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall),
+                                            style: Theme.of(context).textTheme.bodySmall),
+                                        Text('Naturaleza: ${char.nature}',
+                                            style: Theme.of(context).textTheme.bodySmall),
                                       ]
                                     ],
                                   ),
