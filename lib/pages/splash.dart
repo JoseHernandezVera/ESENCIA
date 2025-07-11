@@ -17,7 +17,6 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     
-    // Configurar las animaciones
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -37,7 +36,6 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
       ),
     );
     
-    // Iniciar animación después de un breve retraso
     Future.delayed(const Duration(milliseconds: 500), () {
       _controller.forward();
     });

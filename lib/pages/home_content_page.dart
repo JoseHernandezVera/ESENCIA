@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
+import '../providers/favorites_provider.dart';
 import '../services/api_services.dart';
 import '../services/naruto_character.dart';
 import '../models/clan.dart';
@@ -9,6 +10,7 @@ import '../models/akatsuki.dart';
 import '../models/kekkei_genkai.dart';
 import '../models/tailed_beast.dart';
 import '../models/team.dart';
+import 'package:collection/collection.dart';
 
 enum CollectionType {
   characters,
@@ -304,6 +306,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
     );
   }
 
+
   Widget _buildCardForItem(dynamic item) {
     String name = '';
     String description = '';
@@ -317,18 +320,19 @@ class _HomeContentPageState extends State<HomeContentPage> {
       image = item.image;
     } else if (item is AkatsukiMember) {
       name = item.name;
-      final match = _allCharacters.where((c) => c.name == item.name).isNotEmpty
-          ? _allCharacters.firstWhere((c) => c.name == item.name)
-          : null;
-      if (match != null) {
-        description =
-            'Debut: ${match.debut}\nClan: ${match.clan}\nSexo: ${match.gender}\nAltura: ${match.height}\nAfiliación: ${match.affiliation}\nNaturaleza: ${match.nature}';
-        image = match.image;
-      } else {
-        description =
-            '${item.description}\nEstado: ${item.status ?? "Desconocido"}\nHabilidades: ${item.abilities?.join(", ") ?? "N/A"}';
-        image = item.image;
-      }
+    final match = _allCharacters.firstWhereOrNull((c) => c.name == item.name);
+
+    if (match != null) {
+      description =
+          'Debut: ${match.debut}\nClan: ${match.clan}\nSexo: ${match.gender}\nAltura: ${match.height}\nAfiliación: ${match.affiliation}\nNaturaleza: ${match.nature}';
+      image = match.image;
+    } else {
+      description =
+          '${item.description}\nEstado: ${item.status ?? "Desconocido"}\nHabilidades: ${item.abilities?.join(", ") ?? "N/A"}';
+      image = item.image;
+    }
+
+
     } else if (item is Clan) {
       name = item.name;
       description = item.description;
@@ -366,23 +370,46 @@ class _HomeContentPageState extends State<HomeContentPage> {
         children: [
           Expanded(
             flex: 6,
-            child: ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
-              child: image.isNotEmpty
-                  ? Image.network(
-                      image,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.broken_image),
-                    )
-                  : Container(
-                      color: Colors.grey[200],
-                      child: const Center(
-                        child: Icon(Icons.image_not_supported,
-                            color: Colors.grey),
-                      ),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                    child: image.isNotEmpty
+                        ? Image.network(
+                            image,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.broken_image),
+                          )
+                        : Container(
+                            color: Colors.grey[200],
+                            child: const Center(
+                              child: Icon(Icons.image_not_supported, color: Colors.grey),
+                            ),
+                          ),
+                  ),
+                ),
+                if (item is NarutoCharacter)
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: Consumer<FavoritesProvider>(
+                      builder: (context, favorites, _) {
+                        final isFav = favorites.isFavorite(item.name);
+                        return IconButton(
+                          icon: Icon(
+                            isFav ? Icons.favorite : Icons.favorite_border,
+                            color: isFav ? Colors.red : Colors.white,
+                          ),
+                          onPressed: () {
+                            favorites.toggleFavorite(item.name);
+                          },
+                        );
+                      },
                     ),
+                  ),
+              ],
             ),
           ),
           Expanded(
@@ -413,9 +440,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
                       const SizedBox(height: 4),
                       Wrap(
                         spacing: 4,
-                        children: chips
-                            .map((c) => Chip(label: Text(c)))
-                            .toList(),
+                        children: chips.map((c) => Chip(label: Text(c))).toList(),
                       ),
                     ],
                   ],
@@ -427,6 +452,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
       ),
     );
   }
+
 
   void _showDetailModal(dynamic item) {
     String name = '';

@@ -5,15 +5,20 @@ import 'theme/util.dart';
 import 'pages/homepage.dart';
 import 'providers/settings_provider.dart';
 import 'pages/splash.dart';
+import 'providers/favorites_provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => SettingsProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()..loadFavorites()),
+      ],
       child: const MyApp(),
     ),
   );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

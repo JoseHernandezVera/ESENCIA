@@ -3,6 +3,7 @@ import 'profile.dart';
 import 'config.dart';
 import 'comparar.dart';
 import 'home_content_page.dart';
+import 'favoritos_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -26,6 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'Perfil',
     'Configuración',
     'Comparar Personajes',
+    'Favoritos',
   ];
 
   void _onItemTapped(int index) {
@@ -68,6 +70,14 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.compare),
               title: const Text('Comparar'),
               onTap: () => _onItemTapped(3),
+            ),
+            ListTile(
+              leading: const Icon(Icons.favorite),
+              title: const Text('Favoritos'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const FavoritosPage()));
+              },
             ),
           ],
         ),
