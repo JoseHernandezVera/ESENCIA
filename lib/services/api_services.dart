@@ -18,12 +18,16 @@ class ApiService {
     String endpoint,
     T Function(Map<String, dynamic>) fromJson, {
     String name = '',
+    int page = 1,
+    int limit = 20,
   }) async {
     try {
       final params = {
         if (name.isNotEmpty) 'name': name,
+        'page': page.toString(),
+        'limit': limit.toString(),
       };
-      
+
       final url = Uri.parse('$baseUrl/$endpoint').replace(queryParameters: params);
       print('[API Request] $url');
 
@@ -59,14 +63,14 @@ class ApiService {
       return items.map((item) {
         try {
           final itemMap = item as Map<String, dynamic>;
-          
+
           if (!itemMap.containsKey('image') && itemMap.containsKey('images')) {
             final images = itemMap['images'];
             if (images is List && images.isNotEmpty) {
               itemMap['image'] = images.first;
             }
           }
-          
+
           return fromJson(itemMap);
         } catch (e) {
           throw FormatException('Error al convertir item: ${e.toString()}', item);
@@ -84,26 +88,26 @@ class ApiService {
     }
   }
 
-  static Future<List<NarutoCharacter>> fetchCharacters({String name = ''}) =>
-      _fetchList('characters', NarutoCharacter.fromJson, name: name);
+  static Future<List<NarutoCharacter>> fetchCharacters({String name = '', int page = 1, int limit = 20}) =>
+      _fetchList('characters', NarutoCharacter.fromJson, name: name, page: page, limit: limit);
 
-  static Future<List<Clan>> fetchClans({String name = ''}) =>
-      _fetchList('clans', Clan.fromJson, name: name);
+  static Future<List<Clan>> fetchClans({String name = '', int page = 1, int limit = 20}) =>
+      _fetchList('clans', Clan.fromJson, name: name, page: page, limit: limit);
 
-  static Future<List<Village>> fetchVillages({String name = ''}) =>
-      _fetchList('villages', Village.fromJson, name: name);
+  static Future<List<Village>> fetchVillages({String name = '', int page = 1, int limit = 20}) =>
+      _fetchList('villages', Village.fromJson, name: name, page: page, limit: limit);
 
-  static Future<List<AkatsukiMember>> fetchAkatsuki({String name = ''}) =>
-      _fetchList('akatsuki', AkatsukiMember.fromJson, name: name);
+  static Future<List<AkatsukiMember>> fetchAkatsuki({String name = '', int page = 1, int limit = 20}) =>
+      _fetchList('akatsuki', AkatsukiMember.fromJson, name: name, page: page, limit: limit);
 
-  static Future<List<KekkeiGenkai>> fetchKekkeiGenkai({String name = ''}) =>
-      _fetchList('kekkei-genkai', KekkeiGenkai.fromJson, name: name);
+  static Future<List<KekkeiGenkai>> fetchKekkeiGenkai({String name = '', int page = 1, int limit = 20}) =>
+      _fetchList('kekkei-genkai', KekkeiGenkai.fromJson, name: name, page: page, limit: limit);
 
-  static Future<List<TailedBeast>> fetchTailedBeasts({String name = ''}) =>
-      _fetchList('tailed-beasts', TailedBeast.fromJson, name: name);
+  static Future<List<TailedBeast>> fetchTailedBeasts({String name = '', int page = 1, int limit = 20}) =>
+      _fetchList('tailed-beasts', TailedBeast.fromJson, name: name, page: page, limit: limit);
 
-  static Future<List<Team>> fetchTeams({String name = ''}) =>
-      _fetchList('teams', Team.fromJson, name: name);
+  static Future<List<Team>> fetchTeams({String name = '', int page = 1, int limit = 20}) =>
+      _fetchList('teams', Team.fromJson, name: name, page: page, limit: limit);
 }
 
 class ApiException implements Exception {

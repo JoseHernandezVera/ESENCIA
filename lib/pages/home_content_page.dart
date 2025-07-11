@@ -33,6 +33,8 @@ class _HomeContentPageState extends State<HomeContentPage> {
   final _scrollController = ScrollController();
   bool _isLoadingMore = false;
   List<dynamic> _allItems = [];
+  int _currentPage = 1;
+  final int _itemsPerPage = 20;
 
   @override
   void initState() {
@@ -49,8 +51,8 @@ class _HomeContentPageState extends State<HomeContentPage> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore) {
       _loadMoreItems();
     }
@@ -59,10 +61,12 @@ class _HomeContentPageState extends State<HomeContentPage> {
   Future<void> _loadCollection() async {
     setState(() {
       _isLoadingMore = true;
+      _currentPage = 1;
+      _allItems.clear();
     });
 
     try {
-      final newItems = await _fetchCurrentCollection();
+      final newItems = await _fetchCurrentCollection(page: _currentPage);
       setState(() {
         _allItems = newItems;
         _futureItems = Future.value(_allItems);
@@ -80,34 +84,20 @@ class _HomeContentPageState extends State<HomeContentPage> {
     }
   }
 
-  Future<List<dynamic>> _fetchCurrentCollection() async {
-    switch (_selectedCollection) {
-      case CollectionType.characters:
-        return await ApiService.fetchCharacters(name: _searchQuery);
-      case CollectionType.clans:
-        return await ApiService.fetchClans(name: _searchQuery);
-      case CollectionType.villages:
-        return await ApiService.fetchVillages(name: _searchQuery);
-      case CollectionType.akatsuki:
-        return await ApiService.fetchAkatsuki(name: _searchQuery);
-      case CollectionType.kekkeiGenkai:
-        return await ApiService.fetchKekkeiGenkai(name: _searchQuery);
-      case CollectionType.tailedBeasts:
-        return await ApiService.fetchTailedBeasts(name: _searchQuery);
-      case CollectionType.teams:
-        return await ApiService.fetchTeams(name: _searchQuery);
-    }
-  }
-
   Future<void> _loadMoreItems() async {
     if (_isLoadingMore) return;
 
     setState(() => _isLoadingMore = true);
+    _currentPage++;
 
     try {
-      final moreItems = await _fetchCurrentCollection();
+      final moreItems = await _fetchCurrentCollection(page: _currentPage);
+
+      final newItems = moreItems.where((item) =>
+        !_allItems.any((existing) => existing.name == item.name)).toList();
+
       setState(() {
-        _allItems.addAll(moreItems);
+        _allItems.addAll(newItems);
         _futureItems = Future.value(_allItems);
       });
     } catch (e) {
@@ -120,6 +110,25 @@ class _HomeContentPageState extends State<HomeContentPage> {
       if (mounted) {
         setState(() => _isLoadingMore = false);
       }
+    }
+  }
+
+  Future<List<dynamic>> _fetchCurrentCollection({int page = 1}) async {
+    switch (_selectedCollection) {
+      case CollectionType.characters:
+        return await ApiService.fetchCharacters(name: _searchQuery, page: page, limit: _itemsPerPage);
+      case CollectionType.clans:
+        return await ApiService.fetchClans(name: _searchQuery, page: page, limit: _itemsPerPage);
+      case CollectionType.villages:
+        return await ApiService.fetchVillages(name: _searchQuery, page: page, limit: _itemsPerPage);
+      case CollectionType.akatsuki:
+        return await ApiService.fetchAkatsuki(name: _searchQuery, page: page, limit: _itemsPerPage);
+      case CollectionType.kekkeiGenkai:
+        return await ApiService.fetchKekkeiGenkai(name: _searchQuery, page: page, limit: _itemsPerPage);
+      case CollectionType.tailedBeasts:
+        return await ApiService.fetchTailedBeasts(name: _searchQuery, page: page, limit: _itemsPerPage);
+      case CollectionType.teams:
+        return await ApiService.fetchTeams(name: _searchQuery, page: page, limit: _itemsPerPage);
     }
   }
 
