@@ -24,7 +24,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<String> _titles = [
     'Inicio',
-    'Perfil',
     'Configuración',
     'Comparar Personajes',
     'Favoritos',
@@ -56,11 +55,11 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Inicio'),
               onTap: () => _onItemTapped(0),
             ),
-            ListTile(
+            /*stTile(
               leading: const Icon(Icons.person),
               title: const Text('Perfil'),
               onTap: () => _onItemTapped(1),
-            ),
+            ),*/
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Configuración'),
