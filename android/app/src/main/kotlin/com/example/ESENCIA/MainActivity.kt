@@ -1,4 +1,4 @@
-package com.example.esencia_app
+package com.example.ESENCIA
 
 import io.flutter.embedding.android.FlutterActivity
 

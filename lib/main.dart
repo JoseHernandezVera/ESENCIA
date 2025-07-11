@@ -4,6 +4,7 @@ import 'theme/theme.dart';
 import 'theme/util.dart';
 import 'pages/homepage.dart';
 import 'providers/settings_provider.dart';
+import 'pages/splash.dart';
 
 void main() {
   runApp(
@@ -26,13 +27,18 @@ class MyApp extends StatelessWidget {
       builder: (context, settings, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Mi app con tema personalizado',
+          title: 'ESENCIA',
           theme: materialTheme.light(),
           darkTheme: materialTheme.dark(),
           themeMode: settings.themeMode,
-          home: const MyHomePage(),
+          initialRoute: '/splash',
+          routes: {
+            '/splash': (context) => const SplashPage(),
+            '/home': (context) => const MyHomePage(),
+          },
         );
       },
     );
   }
+
 }
