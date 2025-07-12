@@ -54,11 +54,12 @@ class ConnectivityHandler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<ConnectivityResult>(
+    return FutureBuilder<List<ConnectivityResult>>(
       future: Connectivity().checkConnectivity(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data == ConnectivityResult.none) {
+          final results = snapshot.data ?? [];
+          if (results.isEmpty || results.any((result) => result == ConnectivityResult.none)) {
             return const NoConnectionPage();
           }
           return const MyHomePage();

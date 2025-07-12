@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart' show timeDilation;
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({Key? key}) : super(key: key);
+  const SplashPage({super.key});
 
   @override
-  _SplashPageState createState() => _SplashPageState();
+  State<SplashPage> createState() => _SplashPageState();
 }
 
 class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
@@ -50,12 +49,11 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo con animación de escala
             ScaleTransition(
               scale: _scaleAnimation,
               child: Image.asset(
@@ -65,7 +63,6 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
               ),
             ),
             const SizedBox(height: 40),
-            // Botón con animación de fade
             FadeTransition(
               opacity: _fadeAnimation,
               child: ElevatedButton(
