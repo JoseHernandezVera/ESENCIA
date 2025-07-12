@@ -43,25 +43,64 @@ class ConfigPage extends StatelessWidget {
           const SizedBox(height: 40),
           Divider(thickness: 1),
           const SizedBox(height: 20),
-          Text(
-            "Sobre mí",
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            "Nombre de la App:\nESENCIA\n",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const Text(
-            "¿De qué trata?\nEsta aplicación permite explorar personajes y más del universo Naruto, con información detallada provista por la API de Dattebayo.",
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            "Desarrolladores:\n- José Hernández\n- Fabian Arévalo",
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            "Créditos API:\nDatos proporcionados por la comunidad de la API de Naruto:\nDattebayo API - https://dattebayo-api.onrender.com",
+          Center(
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.info_outline),
+              label: const Text("Sobre mí"),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                'assets/icons/SoloLogo.png',
+                                height: 100,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              "ESENCIA",
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            const SizedBox(height: 12),
+                            const Text(
+                              "¿De qué trata?\nEsta aplicación permite explorar personajes y más del universo Naruto, con información detallada provista por la API de Dattebayo.",
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            const Text(
+                              "Desarrolladores:\n- José Hernández\n- Fabián Arévalo",
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            const Text(
+                              "Créditos API:\nDatos proporcionados por la comunidad de la API de Naruto:\nDattebayo API - https://dattebayo-api.onrender.com",
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              child: const Text("Cerrar"),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

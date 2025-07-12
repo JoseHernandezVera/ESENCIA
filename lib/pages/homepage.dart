@@ -109,12 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Configuración'),
-              onTap: () => _onItemTapped(2),
+              onTap: () => _onItemTapped(1),
             ),
             ListTile(
               leading: const Icon(Icons.compare),
               title: const Text('Comparar'),
-              onTap: () => _onItemTapped(3),
+              onTap: () => _onItemTapped(2),
             ),
             ListTile(
               leading: const Icon(Icons.favorite),
