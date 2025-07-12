@@ -27,9 +27,10 @@ class NoConnectionPage extends StatelessWidget {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Aún no hay conexión a Internet'),
           duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
         ),
       );
     }
@@ -37,6 +38,9 @@ class NoConnectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -44,28 +48,38 @@ class NoConnectionPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.wifi_off, size: 80, color: Colors.grey),
+              Icon(
+                Icons.wifi_off, 
+                size: 80, 
+                color: colorScheme.error,
+              ),
               const SizedBox(height: 20),
               Text(
                 'Sin conexión a Internet',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 10),
               Text(
                 'Por favor, revisa tu conexión a la red y vuelve a intentarlo.',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface.withOpacity(0.8),
+                ),
               ),
               const SizedBox(height: 30),
               ElevatedButton.icon(
                 onPressed: () => _tryAgain(context),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Reintentar'),
+                icon: Icon(Icons.refresh, color: colorScheme.onPrimary),
+                label: Text(
+                  'Reintentar',
+                  style: TextStyle(color: colorScheme.onPrimary),
+                ),
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(200, 50),
+                  backgroundColor: colorScheme.primary,
                 ),
               ),
             ],
