@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'theme/theme.dart';
 import 'theme/util.dart';
 import 'pages/homepage.dart';
+import 'pages/no_connection_page.dart';
 import 'providers/settings_provider.dart';
 import 'pages/splash.dart';
 import 'providers/favorites_provider.dart';
@@ -18,7 +20,6 @@ void main() {
     ),
   );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -39,11 +40,33 @@ class MyApp extends StatelessWidget {
           initialRoute: '/splash',
           routes: {
             '/splash': (context) => const SplashPage(),
-            '/home': (context) => const MyHomePage(),
+            '/home': (context) => const ConnectivityHandler(),
+            '/no-connection': (context) => const NoConnectionPage(),
           },
         );
       },
     );
   }
+}
 
+class ConnectivityHandler extends StatelessWidget {
+  const ConnectivityHandler({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<ConnectivityResult>(
+      future: Connectivity().checkConnectivity(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data == ConnectivityResult.none) {
+            return const NoConnectionPage();
+          }
+          return const MyHomePage();
+        }
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
 }
