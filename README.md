@@ -1,5 +1,7 @@
 # ESENCIA: Tu enciclopedia para personajes del Universo de Naruto
 
+![alt text](assets/icons/NombreyLogo.png)
+
 ESENCIA es una aplicación movil desarrollada con flutter que consume una API de naruto para mostrar información relacionada con los personajes dentro del Universo del Anime, Consumiendo información directamente desde la Dattebayo API.
 
 ## Características Principales
@@ -22,8 +24,25 @@ Interfaz fluida y Animada: Desde una pantalla de bienvenida (SplashScreen).
 
 Compartir con amigos: Comparte tu lista de personajes favoritos con quien quieras a traves de aplicaciones de texto ( WhatsApp, Telegram u otras aplicaciones).
 
+## Tecnologías y Paquetes Usados
+
+Framework: Flutter
+
+Lenguaje: Dart
+
+Gestión de estados: Providers
+
+Peticiones HTTP: http para consumir la API
+
+Conectividad: connectivity_plus Para detectar el estado de coneción
+
+Persistencia Local: shared_preferences
+
+Interacción con otras app: share_plus(compartir favoritos) y url_launcher(para abrir enlaces externos)
 
 ## Estructura del proyecto
+
+Este proyecto sigue una arquitectura limpia y escalable, separando responsabilidades en diferentes capas para facilitar mantenimiento y crecimiento.
 
 lib/
 
@@ -32,17 +51,31 @@ lib/
     pages/
         -splash.dart
         -homepage.dart
-        -profile.dart
+        -home_content_page.dart
+        -no_connection_page.dart
+        -favoritos_page.dart
+        -comparar.dart
+        -config.dart
 
-    themebuilder/
+    theme/
         -theme.dart
         -util.dart
 
     services/
         -api_services.dart
+        -naruto_character.dart
 
-    entity/
-        -actividad.dart
+    providers/
+        -settings_provider.dart
+        -favorites_provider.dart
+
+    models/
+        -akatsuki.dart
+        -clan.dart
+        -kekkei_genkai.dart
+        -tailed_beast.dart
+        -team.dart
+        -village.dart
 
 
 assets/
@@ -52,5 +85,9 @@ assets/
     images/
 
     screenshots/
+
+
+## SCREENSHOTS
+
 
 
