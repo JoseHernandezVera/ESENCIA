@@ -1,3 +1,4 @@
+import 'package:share_plus/share_plus.dart'; 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/api_services.dart';
@@ -18,8 +19,25 @@ class _FavoritosPageState extends State<FavoritosPage> {
   void initState() {
     super.initState();
     ApiService.fetchCharacters(limit: 637).then((list) {
-      setState(() => _all = list);
+      if (mounted) {
+        setState(() => _all = list);
+      }
     });
+  }
+
+  void _shareFavorites(List<NarutoCharacter> favoritos) {
+    if (favoritos.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No tienes favoritos para compartir.')),
+      );
+      return;
+    }
+
+    final String header = 'Mis Personajes Favoritos de la app ESENCIA:\n\n';
+    final String charactersList = favoritos.map((c) => '- ${c.name}').join('\n');
+    final String fullText = header + charactersList;
+
+    Share.share(fullText, subject: 'Mis Personajes Favoritos de ESENCIA');
   }
 
   @override
@@ -28,7 +46,18 @@ class _FavoritosPageState extends State<FavoritosPage> {
     final favoritos = _all.where((c) => favs.contains(c.name)).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Favoritos')),
+      appBar: AppBar(
+        title: const Text('Favoritos'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {
+              _shareFavorites(favoritos);
+            },
+            tooltip: 'Compartir Favoritos',
+          ),
+        ],
+      ),
       body: favoritos.isEmpty
           ? const Center(child: Text('No tienes personajes favoritos aún.'))
           : ListView.builder(
@@ -47,4 +76,5 @@ class _FavoritosPageState extends State<FavoritosPage> {
             ),
     );
   }
+
 }

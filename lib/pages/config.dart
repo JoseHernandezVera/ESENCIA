@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ConfigPage extends StatelessWidget {
   const ConfigPage({super.key});
@@ -84,9 +85,21 @@ class ConfigPage extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 12),
-                            const Text(
-                              "Créditos API:\nDatos proporcionados por la comunidad de la API de Naruto:\nDattebayo API - https://dattebayo-api.onrender.com",
-                              textAlign: TextAlign.center,
+                            InkWell(
+                              onTap: () async {
+                                final url = Uri.parse('https://api-dattebayo.vercel.app/');
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                                }
+                              },
+                              child: const Text(
+                                "Créditos API:\nDatos proporcionados por la comunidad de la API de Naruto:\nDattebayo API - https://dattebayo-api.onrender.com",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
                             ),
                             const SizedBox(height: 16),
                             ElevatedButton(
