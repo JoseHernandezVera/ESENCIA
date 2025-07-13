@@ -89,5 +89,33 @@ assets/
 
 ## SCREENSHOTS
 
+Inicio
 
+![alt text](assets/screenshots/inicio.jpg)
+
+Home
+
+![alt text](assets/screenshots/home.jpg)
+
+Detalle (Pergamino)
+
+![alt text](assets/screenshots/tarjetapersonaje.jpg)
+
+Comparador
+
+![alt text](assets/screenshots/comparador.jpg)
+
+Favoritos
+
+![alt text](assets/screenshots/favoritos.jpg)
+
+Sin Conexión
+
+![alt text](assets/screenshots/sinconexion.jpg)
+
+
+## Desarrolladores
+
+José Hernández
+Fabián Arévalo
 
