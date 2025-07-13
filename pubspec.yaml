@@ -35,6 +35,9 @@ flutter:
   assets:
     - assets/icons/SoloLogo.png
     - assets/icons/NombreyLogo.png
+    - assets/images/pergaminoabierto.png
+    - assets/images/pergaminocerrado.png
+    - assets/images/fondo.jpg
 
 flutter_launcher_icons:
   android: "ic_launcher"

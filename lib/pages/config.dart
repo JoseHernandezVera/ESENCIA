@@ -28,7 +28,7 @@ class ConfigPage extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [1, 2, 3].map((count) {
+            children: [1, 2].map((count) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: ChoiceChip(

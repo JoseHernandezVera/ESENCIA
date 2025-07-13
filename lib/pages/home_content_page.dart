@@ -44,7 +44,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
   @override
   void initState() {
     super.initState();
-    _loadCharacters(); // Pre-cargar personajes
+    _loadCharacters();
     _loadCollection();
     _scrollController.addListener(_scrollListener);
   }
@@ -283,9 +283,9 @@ class _HomeContentPageState extends State<HomeContentPage> {
                   padding: const EdgeInsets.all(8),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: cardsPerRow,
-                    childAspectRatio: 0.75,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
+                    childAspectRatio: 535 / 100, // Proporción del pergamino
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 1,
                   ),
                   itemCount: items.length + (_isLoadingMore ? 1 : 0),
                   itemBuilder: (context, index) {
@@ -293,7 +293,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     return GestureDetector(
-                      onTap: () => _showDetailModal(items[index]),
+                      onTap: () => _showDetailModal(items[index]),//
                       child: _buildCardForItem(items[index]),
                     );
                   },
@@ -306,174 +306,87 @@ class _HomeContentPageState extends State<HomeContentPage> {
     );
   }
 
-
   Widget _buildCardForItem(dynamic item) {
     String name = '';
-    String description = '';
-    String image = '';
-    List<String> chips = [];
+    bool isCharacter = false;
 
     if (item is NarutoCharacter) {
       name = item.name;
-      description =
-          'Debut: ${item.debut}\nClan: ${item.clan}\nSexo: ${item.gender}\nAltura: ${item.height}\nAfiliación: ${item.affiliation}\nNaturaleza: ${item.nature}';
-      image = item.image;
+      isCharacter = true;
     } else if (item is AkatsukiMember) {
       name = item.name;
-    final match = _allCharacters.firstWhereOrNull((c) => c.name == item.name);
-
-    if (match != null) {
-      description =
-          'Debut: ${match.debut}\nClan: ${match.clan}\nSexo: ${match.gender}\nAltura: ${match.height}\nAfiliación: ${match.affiliation}\nNaturaleza: ${match.nature}';
-      image = match.image;
-    } else {
-      description =
-          '${item.description}\nEstado: ${item.status ?? "Desconocido"}\nHabilidades: ${item.abilities?.join(", ") ?? "N/A"}';
-      image = item.image;
-    }
-
-
     } else if (item is Clan) {
       name = item.name;
-      description = item.description;
-      chips = item.members ?? [];
-      image = item.image;
     } else if (item is Team) {
       name = item.name;
-      description = item.description;
-      chips = item.members ?? [];
-      image = item.image;
     } else if (item is KekkeiGenkai) {
       name = item.name;
-      description = item.description;
-      chips = item.users ?? [];
-      image = item.image;
     } else if (item is Village) {
       name = item.name;
-      description =
-          '${item.description}\nPaís: ${item.country ?? "Desconocido"}\nLíder: ${item.leader ?? "Desconocido"}';
-      image = item.image;
     } else if (item is TailedBeast) {
       name = item.name;
-      description =
-          '${item.description}\nColas: ${item.tails ?? "N/A"}\nJinchuriki: ${item.jinchuriki ?? "N/A"}';
-      image = item.image;
     }
 
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            flex: 6,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                    child: image.isNotEmpty
-                        ? Image.network(
-                            image,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.broken_image),
-                          )
-                        : Container(
-                            color: Colors.grey[200],
-                            child: const Center(
-                              child: Icon(Icons.image_not_supported, color: Colors.grey),
-                            ),
-                          ),
-                  ),
-                ),
-                if (item is NarutoCharacter)
-                  Positioned(
-                    top: 4,
-                    right: 4,
-                    child: Consumer<FavoritesProvider>(
-                      builder: (context, favorites, _) {
-                        final isFav = favorites.isFavorite(item.name);
-                        return IconButton(
-                          icon: Icon(
-                            isFav ? Icons.favorite : Icons.favorite_border,
-                            color: isFav ? Colors.red : Colors.white,
-                          ),
-                          onPressed: () {
-                            favorites.toggleFavorite(item.name);
-                          },
-                        );
-                      },
-                    ),
-                  ),
-              ],
+    return Container(
+      margin: const EdgeInsets.all(4),
+      child: AspectRatio(
+        aspectRatio: 535 / 100,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              'assets/images/pergaminocerrado.png',
+              fit: BoxFit.fill,
             ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      description,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (chips.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Wrap(
-                        spacing: 4,
-                        children: chips.map((c) => Chip(label: Text(c))).toList(),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Text(
+                  name,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            color: Colors.white,
+                            blurRadius: 2,
+                            offset: Offset(0, 1)
+                          )
+                        ],
                       ),
-                    ],
-                  ],
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
 
   void _showDetailModal(dynamic item) {
     String name = '';
     String description = '';
     String image = '';
     List<String> chips = [];
+    bool isCharacter = false;
 
     if (item is NarutoCharacter) {
       name = item.name;
       description =
           'Debut: ${item.debut}\nClan: ${item.clan}\nSexo: ${item.gender}\nAltura: ${item.height}\nAfiliación: ${item.affiliation}\nNaturaleza: ${item.nature}';
       image = item.image;
+      isCharacter = true;
     } else if (item is AkatsukiMember) {
       name = item.name;
-      final match = _allCharacters.where((c) => c.name == item.name).isNotEmpty
-          ? _allCharacters.firstWhere((c) => c.name == item.name)
-          : null;
+      final match = _allCharacters.firstWhereOrNull((c) => c.name == item.name);
       if (match != null) {
         description =
             'Debut: ${match.debut}\nClan: ${match.clan}\nSexo: ${match.gender}\nAltura: ${match.height}\nAfiliación: ${match.affiliation}\nNaturaleza: ${match.nature}';
         image = match.image;
+        isCharacter = true;
       } else {
         description =
             '${item.description}\nEstado: ${item.status ?? "Desconocido"}\nHabilidades: ${item.abilities?.join(", ") ?? "N/A"}';
@@ -509,38 +422,125 @@ class _HomeContentPageState extends State<HomeContentPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final screenHeight = MediaQuery.of(context).size.height;
+        final screenWidth = MediaQuery.of(context).size.width;
+        
+        return Container(
+          height: screenHeight * 0.9,
+          padding: const EdgeInsets.all(16),
+          child: Stack(
+            alignment: Alignment.topCenter,
             children: [
-              if (image.isNotEmpty)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(image),
+              Image.asset(
+                'assets/images/pergaminoabierto.png',
+                fit: BoxFit.contain,
+                width: screenWidth * 0.95,
+              ),
+              Positioned(
+                top: screenHeight * 0.08,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.1,
+                    vertical: 16,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              name,
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          if (item is NarutoCharacter || item is AkatsukiMember)
+                            Consumer<FavoritesProvider>(
+                              builder: (context, favorites, _) {
+                                final isFav = favorites.isFavorite(name);
+                                return IconButton(
+                                  icon: Icon(
+                                    isFav ? Icons.favorite : Icons.favorite_border,
+                                    color: isFav ? Colors.red : Colors.black,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {
+                                    Provider.of<FavoritesProvider>(context, listen: false)
+                                        .toggleFavorite(name);
+                                  },
+                                );
+                              },
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      if (image.isNotEmpty)
+                        Container(
+                          height: screenHeight * 0.25,
+                          width: screenWidth * 0.5,
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              image,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          description,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.black,
+                              ),
+                        ),
+                      ),
+                      if (chips.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          children: chips.map((c) => Chip(
+                            label: Text(c),
+                            backgroundColor: Colors.brown[100],
+                          )).toList(),
+                        ),
+                      ],
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
-              const SizedBox(height: 16),
-              Text(name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              Text(description),
-              if (chips.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 4,
-                  children: chips
-                      .map((c) => Chip(label: Text(c)))
-                      .toList(),
-                ),
-              ],
+              ),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
