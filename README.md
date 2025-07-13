@@ -1,6 +1,27 @@
-# ESENCIA
+# ESENCIA: Tu enciclopedia para personajes del Universo de Naruto
 
-ESENCIA es una aplicación movil desarrollada con flutter que consume una API de naruto para mostrar información relacionada con los personajes
+ESENCIA es una aplicación movil desarrollada con flutter que consume una API de naruto para mostrar información relacionada con los personajes dentro del Universo del Anime, Consumiendo información directamente desde la Dattebayo API.
+
+## Características Principales
+
+Exploración: Navega a través de los multiples personajes de la serie.
+
+Búsqueda y filtro: Encuentra rapidamente a tu personaje gracias a la función de búsqueda por nombre en cada categoria.
+
+Detalles graficos: Visualiza la información detallada de cada elemento en una interfaz tematica (pergamino).
+
+Sitema de favoritos: Guarda tus personajes favoritos de manera persistente almacenados localemente.
+
+Comparador de personajes: Selecciona 2 personajes y camapara habilidades y demás.
+
+Funcionalidad Offline: La aplicación detecta coneción a internet. Si no hay conección muetra una pantalla informativa y permite reintentar.
+
+Personalización de la interfaz: Tema claro/oscuro y vista de cuadriculas ajustable.
+
+Interfaz fluida y Animada: Desde una pantalla de bienvenida (SplashScreen).
+
+Compartir con amigos: Comparte tu lista de personajes favoritos con quien quieras a traves de aplicaciones de texto ( WhatsApp, Telegram u otras aplicaciones).
+
 
 ## Estructura del proyecto
 
