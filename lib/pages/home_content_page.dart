@@ -39,7 +39,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
   List<dynamic> _allItems = [];
   List<NarutoCharacter> _allCharacters = [];
   int _currentPage = 1;
-  final int _itemsPerPage = 20;
+  final int _itemsPerPage = 30;
 
   @override
   void initState() {
@@ -182,125 +182,186 @@ class _HomeContentPageState extends State<HomeContentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: DropdownButton<CollectionType>(
-            isExpanded: true,
-            value: _selectedCollection,
-            items: CollectionType.values.map((type) {
-              return DropdownMenuItem(
-                value: type,
-                child: Text(
-                  _getCollectionName(type),
-                  style: Theme.of(context).textTheme.titleMedium,
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/fondo.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white70),
+                  color: Colors.black.withOpacity(0.9),
                 ),
-              );
-            }).toList(),
-            onChanged: (newType) {
-              if (newType != null) {
-                setState(() {
-                  _selectedCollection = newType;
-                  _searchController.clear();
-                  _searchQuery = '';
-                  _allItems = [];
-                  _loadCollection();
-                });
-              }
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Buscar por nombre...',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-            ),
-            onChanged: (value) => _onSearchChanged(value),
-          ),
-        ),
-        const SizedBox(height: 10),
-        Expanded(
-          child: FutureBuilder<List<dynamic>>(
-            future: _futureItems,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting &&
-                  _allItems.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.error_outline,
-                          size: 48, color: Colors.red),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Error al cargar los datos',
-                        style: Theme.of(context).textTheme.titleMedium,
+                child: DropdownButton<CollectionType>(
+                  isExpanded: true,
+                  value: _selectedCollection,
+                  items: CollectionType.values.map((type) {
+                    return DropdownMenuItem(
+                      value: type,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          _getCollectionName(type),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        snapshot.error.toString(),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _loadCollection,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
-                );
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.search_off, size: 48),
-                      SizedBox(height: 16),
-                      Text('No se encontraron resultados'),
-                    ],
-                  ),
-                );
-              }
-
-              final items = snapshot.data!;
-              final cardsPerRow = context.watch<SettingsProvider>().cardsPerRow;
-
-              return RefreshIndicator(
-                onRefresh: _loadCollection,
-                child: GridView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(8),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: cardsPerRow,
-                    childAspectRatio: 535 / 100, // Proporción del pergamino
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 1,
-                  ),
-                  itemCount: items.length + (_isLoadingMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= items.length) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    return GestureDetector(
-                      onTap: () => _showDetailModal(items[index]),//
-                      child: _buildCardForItem(items[index]),
                     );
+                  }).toList(),
+                  onChanged: (newType) {
+                    if (newType != null) {
+                      setState(() {
+                        _selectedCollection = newType;
+                        _searchController.clear();
+                        _searchQuery = '';
+                        _allItems = [];
+                        _loadCollection();
+                      });
+                    }
                   },
+                  dropdownColor: Colors.black.withOpacity(0.7),
+                  icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                  iconSize: 24,
+                  underline: Container(),
+                  style: TextStyle(color: Colors.white),
+                  borderRadius: BorderRadius.circular(12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                 ),
-              );
-            },
-          ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Buscar por nombre...',
+                  hintStyle: TextStyle(color: Colors.white70),
+                  prefixIcon: Icon(Icons.search, color: Colors.white70),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white70),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  fillColor: Colors.black.withOpacity(0.9),
+                  filled: true,
+                ),
+                style: TextStyle(color: Colors.white),
+                onChanged: (value) => _onSearchChanged(value),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: FutureBuilder<List<dynamic>>(
+                future: _futureItems,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting &&
+                      _allItems.isEmpty) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error_outline,
+                              size: 48, color: Colors.white),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Error al cargar los datos',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: Colors.white),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            snapshot.error.toString(),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.white),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: _loadCollection,
+                            child: const Text('Reintentar'),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.search_off, size: 48, color: Colors.white),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No se encontraron resultados',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  final items = snapshot.data!;
+                  final cardsPerRow =
+                      context.watch<SettingsProvider>().cardsPerRow;
+
+                  return RefreshIndicator(
+                    onRefresh: _loadCollection,
+                    color: Colors.white,
+                    backgroundColor: Colors.black.withOpacity(0.5),
+                    child: GridView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(8),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: cardsPerRow,
+                        childAspectRatio: 535 / 100,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 1,
+                      ),
+                      itemCount: items.length + (_isLoadingMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index >= items.length) {
+                          return const Center(
+                              child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ));
+                        }
+                        return GestureDetector(
+                          onTap: () => _showDetailModal(items[index]),
+                          child: _buildCardForItem(items[index]),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -350,7 +411,7 @@ class _HomeContentPageState extends State<HomeContentPage> {
                           Shadow(
                             color: Colors.white,
                             blurRadius: 2,
-                            offset: Offset(0, 1)
+                            offset: Offset(0, 1),
                           )
                         ],
                       ),
@@ -424,121 +485,141 @@ class _HomeContentPageState extends State<HomeContentPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        final screenHeight = MediaQuery.of(context).size.height;
-        final screenWidth = MediaQuery.of(context).size.width;
-        
-        return Container(
-          height: screenHeight * 0.9,
-          padding: const EdgeInsets.all(16),
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Image.asset(
-                'assets/images/pergaminoabierto.png',
-                fit: BoxFit.contain,
-                width: screenWidth * 0.95,
-              ),
-              Positioned(
-                top: screenHeight * 0.08,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.1,
-                    vertical: 16,
+        return DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          minChildSize: 0.5,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              margin: const EdgeInsets.all(8),
+              child: Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  Image.asset(
+                    'assets/images/pergaminoabierto.png',
+                    fit: BoxFit.fill,
+                    width: MediaQuery.of(context).size.width * 0.95,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                      left: 24,
+                      right: 24,
+                      bottom: 24,
+                    ),
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Expanded(
-                            child: Text(
-                              name,
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          if (item is NarutoCharacter || item is AkatsukiMember)
-                            Consumer<FavoritesProvider>(
-                              builder: (context, favorites, _) {
-                                final isFav = favorites.isFavorite(name);
-                                return IconButton(
-                                  icon: Icon(
-                                    isFav ? Icons.favorite : Icons.favorite_border,
-                                    color: isFav ? Colors.red : Colors.black,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
-                                    Provider.of<FavoritesProvider>(context, listen: false)
-                                        .toggleFavorite(name);
-                                  },
-                                );
-                              },
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      if (image.isNotEmpty)
-                        Container(
-                          height: screenHeight * 0.25,
-                          width: screenWidth * 0.5,
-                          margin: const EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 6,
-                                offset: Offset(0, 3),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  name,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
                               ),
+                              const SizedBox(width: 0),
+                              if (isCharacter || item is AkatsukiMember)
+                                Consumer<FavoritesProvider>(
+                                  builder: (context, favorites, _) {
+                                    final isFav = favorites.isFavorite(name);
+                                    return IconButton(
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      icon: Icon(
+                                        isFav
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: isFav ? Colors.red : Colors.black,
+                                        size: 24,
+                                      ),
+                                      onPressed: () {
+                                        Provider.of<FavoritesProvider>(context,
+                                                listen: false)
+                                            .toggleFavorite(name);
+                                      },
+                                    );
+                                  },
+                                ),
                             ],
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              image,
-                              fit: BoxFit.cover,
+                          const SizedBox(height: 40),
+                          if (image.isNotEmpty)
+                            Container(
+                              height: 180,
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              margin: const EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  image,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              description,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Colors.black,
+                                  ),
                             ),
                           ),
-                        ),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          description,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.black,
-                              ),
-                        ),
+                          if (chips.isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: chips
+                                  .map((c) => Chip(
+                                        label: Text(c),
+                                        backgroundColor: Colors.brown[100],
+                                      ))
+                                  .toList(),
+                            ),
+                          ],
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                      if (chips.isNotEmpty) ...[
-                        const SizedBox(height: 16),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          children: chips.map((c) => Chip(
-                            label: Text(c),
-                            backgroundColor: Colors.brown[100],
-                          )).toList(),
-                        ),
-                      ],
-                      const SizedBox(height: 40),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
