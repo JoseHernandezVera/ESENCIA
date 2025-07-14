@@ -23,6 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HomeContentPage(),    
     ConfigPage(),
     CompararPage(),
+    FavoritosPage(),
   ];
 
   final List<String> _titles = [
@@ -119,10 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               leading: const Icon(Icons.favorite),
               title: const Text('Favoritos'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const FavoritosPage()));
-              },
+              onTap: () => _onItemTapped(3),
             ),
           ],
         ),

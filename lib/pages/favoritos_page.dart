@@ -47,7 +47,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favoritos'),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
@@ -59,22 +59,45 @@ class _FavoritosPageState extends State<FavoritosPage> {
         ],
       ),
       body: favoritos.isEmpty
-          ? const Center(child: Text('No tienes personajes favoritos aún.'))
+          ? const Center(
+              child: Text(
+                'No tienes personajes favoritos aún.',
+                style: TextStyle(fontSize: 16),
+              ),
+            )
           : ListView.builder(
+              padding: const EdgeInsets.all(12),
               itemCount: favoritos.length,
               itemBuilder: (context, index) {
                 final c = favoritos[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(c.image),
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  title: Text(c.name),
-                  subtitle: Text('Clan: ${c.clan}\nNaturaleza: ${c.nature}'),
-                  isThreeLine: true,
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(c.image),
+                      radius: 30,
+                    ),
+                    title: Text(
+                      c.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Clan: ${c.clan}\nNaturaleza: ${c.nature}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    isThreeLine: true,
+                  ),
                 );
               },
             ),
     );
   }
-
 }
