@@ -103,7 +103,7 @@ Detalle (Pergamino)
 
 Comparador
 
-![alt text](assets/screenshots/comparador.jpg)
+![alt text](assets/screenshots/comparar.jpg)
 
 Favoritos
 
