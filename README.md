@@ -119,3 +119,8 @@ Sin Conexión
 José Hernández
 Fabián Arévalo
 
+## Intalación
+
+En tu celular descargar ESCENCIA.apk que está en la carpeta APK
+Disfrutar
+
