@@ -26,19 +26,57 @@ class _CompararPageState extends State<CompararPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _allCharacters.isEmpty
-        ? const Center(child: CircularProgressIndicator())
-        : Row(
-            children: [
-              Expanded(child: _buildCharacterSelector(true)),
-              Container(
-                width: 1,
-                height: double.infinity,
-                color: Colors.grey.shade400,
-              ),
-              Expanded(child: _buildCharacterSelector(false)),
-            ],
-          );
+    return Scaffold(
+      body: _allCharacters.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : Row(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      const Positioned.fill(
+                        child: IgnorePointer(
+                          child: Image(
+                            image: AssetImage('assets/images/pergaminoabierto.png'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      MediaQuery.removeViewInsets(
+                        context: context,
+                        removeBottom: true,
+                        child: _buildCharacterSelector(true),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: double.infinity,
+                  color: Colors.grey.shade400,
+                ),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      const Positioned.fill(
+                        child: IgnorePointer(
+                          child: Image(
+                            image: AssetImage('assets/images/pergaminoabierto.png'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      MediaQuery.removeViewInsets(
+                        context: context,
+                        removeBottom: true,
+                        child: _buildCharacterSelector(false),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+    );
   }
 
   Widget _buildCharacterSelector(bool isLeft) {
@@ -74,6 +112,8 @@ class _CompararPageState extends State<CompararPage> {
                   hintText: 'Buscar personaje',
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.8),
                 ),
               );
             },
@@ -94,6 +134,14 @@ class _CompararPageState extends State<CompararPage> {
               },
               icon: const Icon(Icons.clear),
               label: const Text('Limpiar'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white.withOpacity(0.8),
+                foregroundColor: Colors.black,
+              ),
+            ),
+          ] else ...[
+            Expanded(
+              child: Container(),
             ),
           ],
         ],
@@ -117,7 +165,11 @@ class _CompararPageState extends State<CompararPage> {
             ),
           ),
           const SizedBox(height: 8),
-          Text(char.name, style: Theme.of(context).textTheme.titleLarge),
+          Text(char.name, 
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              )),
           const SizedBox(height: 8),
           _infoRow('Debut', char.debut),
           _infoRow('Clan', char.clan),
@@ -136,12 +188,17 @@ class _CompararPageState extends State<CompararPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text('$label: ', 
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              )),
           Expanded(
             child: Text(
               value,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
+              style: TextStyle(color: Colors.black),
             ),
           ),
         ],
